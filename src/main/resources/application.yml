@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: ApiGateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: Projectinfo
+          uri: http://project-sr:9091
+          predicates:
+            - Path=/project/**
+        - id: Employeeinfo
+          uri: http://employee-sr:9092
+          predicates:
+            - Path=/ustemps/**
+        - id: Authentication-Service
+          uri: http://authentication-sr:8090
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - AddRequestHeader=X-Auth-Header, AuthValue
+            - name: AuthenticationFilter
+
+  zipkin:
+    base-url: http://zipkin-sr:9411
+  sleuth:
+    sampler:
+      probability: 1.0  # Adjust sampling as needed
+
+server:
+  port: 8060
